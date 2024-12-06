@@ -22,7 +22,6 @@ const Dashboard = () => {
   const theme = useTheme();
   const isNonMediumScreens = useMediaQuery("(min-width: 1200px)");
 
-  // State to store fetched data
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -62,194 +61,160 @@ const Dashboard = () => {
     },
   ];
 
-  // Loading and Error States
-  if (loading) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-        flexDirection="column"
-      >
-        <CircularProgress size={60} color="primary" />
-        <Typography variant="h6" mt={2}>Loading...</Typography>
-      </Box>
-    );
-  }
-
-  if (error) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-        flexDirection="column"
-      >
-        <Typography color="error" variant="h6">{error}</Typography>
-      </Box>
-    );
-  }
-
   const totalCustomers = dashboardData?.totalCustomers || 0;
   const totalSales = dashboardData?.todayStats?.totalSales || 0;
   const thisMonthSales = dashboardData?.thisMonthStats?.totalSales || 0;
   const yearlySales = dashboardData?.yearlySalesTotal || 0;
   const transactions = dashboardData?.transactions || [];
-  const salesByCategory = dashboardData?.salesByCategory || {};
+
+  // Keyframes for animation
+  const animationStyles = {
+    "@keyframes backgroundPulse": {
+      "0%": { backgroundColor: "#000" },
+      "50%": { backgroundColor: "#0000FF" },
+      "100%": { backgroundColor: "#000" },
+    },
+  };
+
+  const containerStyles = {
+    animation: "backgroundPulse 5s infinite",
+  };
+
+  const cardAnimationStyles = {
+    animation: "backgroundPulse 3s infinite",
+  };
 
   return (
-    <Box m="2rem">
+    <Box m="2rem" sx={{ ...containerStyles, ...animationStyles }}>
       <FlexBetween>
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
       </FlexBetween>
 
+      {/* Stat Cards */}
       <Box
+        display="flex"
+        justifyContent="center"
+        gap="20px"
         mt="20px"
+        flexWrap="wrap"
+      >
+        {[totalCustomers, totalSales, thisMonthSales, yearlySales].map(
+          (value, idx) => {
+            const titles = ["Total Customers", "Sales Today", "Monthly Sales", "Yearly Sales"];
+            const icons = [
+              <Email sx={{ color: theme.palette.secondary[300] }} />,
+              <PointOfSale sx={{ color: theme.palette.secondary[300] }} />,
+              <PersonAdd sx={{ color: theme.palette.secondary[300] }} />,
+              <Traffic sx={{ color: theme.palette.secondary[300] }} />,
+            ];
+            const percentages = ["+14%", "+21%", "+5%", "+43%"];
+            return (
+              <Card
+                key={idx}
+                sx={{
+                  ...cardAnimationStyles,
+                  flex: "1 1 calc(25% - 20px)",
+                  minWidth: "200px",
+                  maxWidth: "300px",
+                  boxShadow: 6,
+                  transition: "all 0.3s ease-in-out",
+                  "&:hover": { boxShadow: 12 },
+                }}
+              >
+                <CardHeader
+                  title={titles[idx]}
+                  subheader="Since last month"
+                  action={<IconButton>{icons[idx]}</IconButton>}
+                  sx={{
+                    backgroundColor: theme.palette.background.alt,
+                    color: theme.palette.secondary[200],
+                  }}
+                />
+                <CardContent>
+                  <Typography
+                    variant="h4"
+                    sx={{ fontWeight: 600, color: theme.palette.primary.main }}
+                  >
+                    {value}
+                  </Typography>
+                  <Typography variant="body1" color="text.secondary">
+                    {percentages[idx]}
+                  </Typography>
+                </CardContent>
+              </Card>
+            );
+          }
+        )}
+      </Box>
+
+      {/* Charts */}
+      <Box
         display="grid"
         gridTemplateColumns="repeat(12, 1fr)"
-        gridAutoRows="160px"
+        gridAutoRows="300px"
         gap="20px"
-        sx={{
-          "& > div": { gridColumn: isNonMediumScreens ? undefined : "span 12" },
-        }}
+        mt="20px"
       >
-        {/* ROW 1 - Stat Boxes */}
-        <Card sx={{ boxShadow: 6, transition: 'all 0.3s ease-in-out', '&:hover': { boxShadow: 12 } }}>
-          <CardHeader
-            title="Total Customers"
-            subheader="Since last month"
-            action={<IconButton><Email sx={{ color: theme.palette.secondary[300] }} /></IconButton>}
-            sx={{
-              backgroundColor: theme.palette.background.alt,
-              color: theme.palette.secondary[200],
-            }}
-          />
-          <CardContent>
-            <Typography variant="h4" sx={{ fontWeight: 600, color: theme.palette.primary.main }}>
-              {totalCustomers}
-            </Typography>
-            <Typography variant="body1" color="text.secondary">+14%</Typography>
-          </CardContent>
-        </Card>
-
-        <Card sx={{ boxShadow: 6, transition: 'all 0.3s ease-in-out', '&:hover': { boxShadow: 12 } }}>
-          <CardHeader
-            title="Sales Today"
-            subheader="Since last month"
-            action={<IconButton><PointOfSale sx={{ color: theme.palette.secondary[300] }} /></IconButton>}
-            sx={{
-              backgroundColor: theme.palette.background.alt,
-              color: theme.palette.secondary[200],
-            }}
-          />
-          <CardContent>
-            <Typography variant="h4" sx={{ fontWeight: 600, color: theme.palette.primary.main }}>
-              ${totalSales}
-            </Typography>
-            <Typography variant="body1" color="text.secondary">+21%</Typography>
-          </CardContent>
-        </Card>
-
-        <Card sx={{ boxShadow: 6, transition: 'all 0.3s ease-in-out', '&:hover': { boxShadow: 12 } }}>
-          <CardHeader
-            title="Monthly Sales"
-            subheader="Since last month"
-            action={<IconButton><PersonAdd sx={{ color: theme.palette.secondary[300] }} /></IconButton>}
-            sx={{
-              backgroundColor: theme.palette.background.alt,
-              color: theme.palette.secondary[200],
-            }}
-          />
-          <CardContent>
-            <Typography variant="h4" sx={{ fontWeight: 600, color: theme.palette.primary.main }}>
-              ${thisMonthSales}
-            </Typography>
-            <Typography variant="body1" color="text.secondary">+5%</Typography>
-          </CardContent>
-        </Card>
-
-        <Card sx={{ boxShadow: 6, transition: 'all 0.3s ease-in-out', '&:hover': { boxShadow: 12 } }}>
-          <CardHeader
-            title="Yearly Sales"
-            subheader="Since last month"
-            action={<IconButton><Traffic sx={{ color: theme.palette.secondary[300] }} /></IconButton>}
-            sx={{
-              backgroundColor: theme.palette.background.alt,
-              color: theme.palette.secondary[200],
-            }}
-          />
-          <CardContent>
-            <Typography variant="h4" sx={{ fontWeight: 600, color: theme.palette.primary.main }}>
-              ${yearlySales}
-            </Typography>
-            <Typography variant="body1" color="text.secondary">+43%</Typography>
-          </CardContent>
-        </Card>
-
-        {/* ROW 2 - Overview and Breakdown Chart */}
         <Box
           gridColumn="span 8"
-          gridRow="span 2"
           backgroundColor={theme.palette.background.alt}
           p="1.5rem"
           borderRadius="0.55rem"
           boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)"
-          display="flex"
-          flexDirection="column"
         >
           <OverviewChart data={dashboardData} view="sales" isDashboard={true} />
         </Box>
-
         <Box
           gridColumn="span 4"
-          gridRow="span 2"
           backgroundColor={theme.palette.background.alt}
           p="1.5rem"
           borderRadius="0.55rem"
           boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)"
-          display="flex"
-          flexDirection="column"
         >
           <BreakdownChart data={dashboardData} />
         </Box>
+      </Box>
 
-        {/* ROW 3 - Transaction Data */}
-        <Box
-          gridColumn="span 12"
-          gridRow="span 3"
-          sx={{
-            "& .MuiDataGrid-root": {
-              border: "none",
-              borderRadius: "0.55rem",
+      {/* Transactions */}
+      <Box
+        mt="20px"
+        gridColumn="span 12"
+        backgroundColor={theme.palette.background.alt}
+        p="1.5rem"
+        borderRadius="0.55rem"
+        boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)"
+        sx={{
+          "& .MuiDataGrid-root": {
+            border: "none",
+            borderRadius: "0.55rem",
+          },
+          "& .MuiDataGrid-cell": {
+            borderBottom: "none",
+            "&:hover": {
+              backgroundColor: theme.palette.action.hover,
             },
-            "& .MuiDataGrid-cell": {
-              borderBottom: "none",
-              '&:hover': {
-                backgroundColor: theme.palette.action.hover,
-              },
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: theme.palette.background.alt,
-              color: theme.palette.secondary[100],
-              borderBottom: "none",
-            },
-            "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: theme.palette.background.alt,
-            },
-            "& .MuiDataGrid-footerContainer": {
-              backgroundColor: theme.palette.background.alt,
-              color: theme.palette.secondary[100],
-              borderTop: "none",
-            },
-            "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-              color: `${theme.palette.secondary[200]} !important`,
-            },
-          }}
-        >
-          <DataGrid rows={transactions} columns={columns} getRowId={(row) => row._id} autoHeight />
-        </Box>
+          },
+          "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: theme.palette.background.alt,
+            color: theme.palette.secondary[100],
+            borderBottom: "none",
+          },
+          "& .MuiDataGrid-virtualScroller": {
+            backgroundColor: theme.palette.background.alt,
+          },
+          "& .MuiDataGrid-footerContainer": {
+            backgroundColor: theme.palette.background.alt,
+            color: theme.palette.secondary[100],
+            borderTop: "none",
+          },
+        }}
+      >
+        <DataGrid
+          rows={transactions}
+          columns={columns}
+          getRowId={(row) => row._id}
+          autoHeight
+        />
       </Box>
     </Box>
   );
