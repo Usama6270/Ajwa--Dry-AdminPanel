@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
   Box,
-  //Divider,
   Drawer,
   IconButton,
   List,
@@ -25,7 +24,9 @@ import {
   CalendarMonthOutlined,
   AdminPanelSettingsOutlined,
   TrendingUpOutlined,
-  PieChartOutlined
+  PieChartOutlined,
+  LocalOfferOutlined, // Promotions Icon
+  CardGiftcardOutlined // Vouchers Icon
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from 'react-router-dom';
 import FlexBetween from './FlexBetween';
@@ -45,9 +46,10 @@ const navItems = [
   { text: "Management", icon: null },
   { text: "Admin", icon: <AdminPanelSettingsOutlined /> },
   { text: "Performance", icon: <TrendingUpOutlined /> },
-  { text: "Notifications", icon: <TodayOutlined /> }, // New section
+  { text: "Notifications", icon: <TodayOutlined /> },
+  { text: "Promotions", icon: <LocalOfferOutlined /> }, // New section for Promotions
+  { text: "Vouchers", icon: <CardGiftcardOutlined /> }, // New section for Vouchers
 ];
-
 
 const Sidebar = ({
   user,

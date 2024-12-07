@@ -9,7 +9,7 @@ import { setUser } from "./state/globalReducer"; // Action to set user data in R
 import Dashboard from "scenes/dashboard";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Layout from "scenes/layout";  // Your layout component containing sidebar/navigation
+import Layout from "scenes/layout"; // Your layout component containing sidebar/navigation
 import Products from "scenes/products";
 import Customers from "scenes/customers";
 import Transactions from "scenes/transactions";
@@ -22,6 +22,8 @@ import Admin from "scenes/admin";
 import Performance from "scenes/performance";
 import Settings from "scenes/settings"; // Import the Settings component
 import NotificationsPage from "./pages/NotificationsPage"; // Import NotificationsPage
+import PromotionsPage from "./pages/PromotionsPage"; // Import PromotionsPage
+import VouchersPage from "./pages/VouchersPage"; // Import VouchersPage
 
 function App() {
   const dispatch = useDispatch();
@@ -82,8 +84,10 @@ function App() {
               <Route path="/breakdown" element={<Breakdown />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/performance" element={<Performance />} />
-              <Route path="/settings" element={<Settings />} /> {/* Add settings route */}
-              <Route path="/notifications" element={<NotificationsPage />} /> {/* Add notifications route */}
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/promotions" element={<PromotionsPage />} /> {/* Add Promotions route */}
+              <Route path="/vouchers" element={<VouchersPage />} /> {/* Add Vouchers route */}
             </Route>
           </Routes>
         </ThemeProvider>

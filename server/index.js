@@ -11,7 +11,8 @@ import managementRoutes from "./routes/management.js";
 import salesRoutes from "./routes/sales.js";
 import authRoutes from './routes/auth.js'; 
 import notificationRoutes from './routes/notificationRoutes.js';
-
+import promotionsRouter from './routes/promotions.js'; // Correct path and import
+import vouchersRouter from './routes/vouchers.js';
 /*// data imports
 import User from "./models/User.js";
 import Product from "./models/Product.js";
@@ -43,7 +44,9 @@ app.use('/api/general', generalRoutes);
 app.use('/api/management', managementRoutes);
 app.use('/api/sales', salesRoutes);
 app.use("/api/auth", authRoutes);
-app.use('/api/notifications', notificationRoutes); 
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/promotions', promotionsRouter); // Use promotions router
+app.use('/api/vouchers', vouchersRouter);
 
 
 /* MONGOOSE SETUP */

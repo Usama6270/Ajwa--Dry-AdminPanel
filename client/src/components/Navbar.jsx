@@ -4,9 +4,7 @@ import {
   DarkModeOutlined,
   Menu as MenuIcon,
   SettingsOutlined,
-  ArrowDropDownOutlined,
 } from "@mui/icons-material";
-import FlexBetween from "components/FlexBetween";
 import { useDispatch } from "react-redux";
 import { setMode } from "state";
 import profileImage from "assets/profile.jpeg";
@@ -17,31 +15,27 @@ import {
   Typography,
   IconButton,
   Toolbar,
-  Menu,
-  MenuItem,
   useTheme,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import FlexBetween from "components/FlexBetween"; // Assuming FlexBetween component exists
 
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const navigate = useNavigate(); // Initialize useNavigate
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const isOpen = Boolean(anchorEl);
-  const handleClick = (event) => setAnchorEl(event.currentTarget);
-  const handleClose = () => setAnchorEl(null);
+  // State to track if the profile image is clicked
+  const [isImageEnlarged, setIsImageEnlarged] = useState(false);
 
-  // Log Out Function
-  const handleLogOut = () => {
-    // Clear user session data (e.g., authentication token)
-    localStorage.removeItem('authToken'); // Replace with your auth token key
-    // If you're using Redux to manage user state, you can also clear it like this:
-    // dispatch(logout());
+  // Handle Mode Toggle (Light/Dark Mode)
+  const handleModeToggle = () => {
+    dispatch(setMode()); // Dispatch mode change action
+  };
 
-    // Redirect user to the login page
-    navigate("/login"); // Redirects to the login page
+  // Handle Image Click to toggle its size
+  const handleImageClick = () => {
+    setIsImageEnlarged(!isImageEnlarged); // Toggle the enlarged state
   };
 
   return (
@@ -62,20 +56,23 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
 
         {/* RIGHT SIDE */}
         <FlexBetween gap="1.5rem">
-          <IconButton onClick={() => dispatch(setMode())}>
+          {/* Light/Dark Mode Toggle */}
+          <IconButton onClick={handleModeToggle}>
             {theme.palette.mode === "dark" ? (
               <DarkModeOutlined sx={{ fontSize: "25px" }} />
             ) : (
               <LightModeOutlined sx={{ fontSize: "25px" }} />
             )}
           </IconButton>
+
+          {/* Settings Icon */}
           <IconButton onClick={() => navigate("/settings")}> {/* Navigate */}
             <SettingsOutlined sx={{ fontSize: "25px" }} />
           </IconButton>
 
+          {/* Profile Button */}
           <FlexBetween>
             <Button
-              onClick={handleClick}
               sx={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -84,14 +81,16 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
                 gap: "1rem",
               }}
             >
+              {/* Profile Image */}
               <Box
                 component="img"
                 alt="profile"
                 src={profileImage}
-                height="32px"
-                width="32px"
+                height={isImageEnlarged ? "200px" : "42px"} // Change size based on state
+                width={isImageEnlarged ? "200px" : "42px"} // Change size based on state
                 borderRadius="50%"
-                sx={{ objectFit: "cover" }}
+                sx={{ objectFit: "cover", cursor: "pointer" }}
+                onClick={handleImageClick} // Handle image click
               />
               <Box textAlign="left">
                 <Typography
@@ -108,18 +107,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
                   {user.occupation}
                 </Typography>
               </Box>
-              <ArrowDropDownOutlined
-                sx={{ color: theme.palette.secondary[300], fontSize: "25px" }}
-              />
             </Button>
-            <Menu
-              anchorEl={anchorEl}
-              open={isOpen}
-              onClose={handleClose}
-              anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            >
-              <MenuItem onClick={handleLogOut}>Log Out</MenuItem> {/* Log Out option */}
-            </Menu>
           </FlexBetween>
         </FlexBetween>
       </Toolbar>
