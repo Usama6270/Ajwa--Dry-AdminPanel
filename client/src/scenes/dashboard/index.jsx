@@ -8,7 +8,6 @@ import {
   Typography,
   useTheme,
   useMediaQuery,
-  CircularProgress,
   Card,
   CardContent,
   CardHeader,
@@ -25,12 +24,15 @@ const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [visibleTransactions, setVisibleTransactions] = useState([]);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         const response = await axios.get("http://localhost:9000/api/general/dashboard");
         setDashboardData(response.data);
+        // Show only the first 10 transactions initially
+        setVisibleTransactions(response.data.transactions.slice(0, 10));
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
         setError("Failed to fetch dashboard data.");
@@ -67,25 +69,9 @@ const Dashboard = () => {
   const yearlySales = dashboardData?.yearlySalesTotal || 0;
   const transactions = dashboardData?.transactions || [];
 
-  // Keyframes for animation
-  const animationStyles = {
-    "@keyframes backgroundPulse": {
-      "0%": { backgroundColor: "#000" },
-      "50%": { backgroundColor: "#0000FF" },
-      "100%": { backgroundColor: "#000" },
-    },
-  };
-
-  const containerStyles = {
-    animation: "backgroundPulse 5s infinite",
-  };
-
-  const cardAnimationStyles = {
-    animation: "backgroundPulse 3s infinite",
-  };
-
   return (
-    <Box m="2rem" sx={{ ...containerStyles, ...animationStyles }}>
+    <Box m="2rem">
+      {/* Header */}
       <FlexBetween>
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
       </FlexBetween>
@@ -112,13 +98,15 @@ const Dashboard = () => {
               <Card
                 key={idx}
                 sx={{
-                  ...cardAnimationStyles,
                   flex: "1 1 calc(25% - 20px)",
                   minWidth: "200px",
                   maxWidth: "300px",
-                  boxShadow: 6,
-                  transition: "all 0.3s ease-in-out",
-                  "&:hover": { boxShadow: 12 },
+                  boxShadow: 4,
+                  transition: "transform 0.3s ease-in-out",
+                  "&:hover": {
+                    transform: "translateY(-5px)",
+                    boxShadow: 8,
+                  },
                 }}
               >
                 <CardHeader
@@ -155,6 +143,7 @@ const Dashboard = () => {
         gap="20px"
         mt="20px"
       >
+        {/* Overview Chart */}
         <Box
           gridColumn="span 8"
           backgroundColor={theme.palette.background.alt}
@@ -164,6 +153,8 @@ const Dashboard = () => {
         >
           <OverviewChart data={dashboardData} view="sales" isDashboard={true} />
         </Box>
+
+        {/* Breakdown Chart */}
         <Box
           gridColumn="span 4"
           backgroundColor={theme.palette.background.alt}
@@ -175,7 +166,7 @@ const Dashboard = () => {
         </Box>
       </Box>
 
-      {/* Transactions */}
+      {/* Transactions DataGrid */}
       <Box
         mt="20px"
         gridColumn="span 12"
@@ -187,6 +178,8 @@ const Dashboard = () => {
           "& .MuiDataGrid-root": {
             border: "none",
             borderRadius: "0.55rem",
+            transition: "all 0.3s ease-in-out",
+            height: "400px", // Fixed height
           },
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
@@ -210,10 +203,10 @@ const Dashboard = () => {
         }}
       >
         <DataGrid
-          rows={transactions}
+          rows={visibleTransactions}
           columns={columns}
           getRowId={(row) => row._id}
-          autoHeight
+          autoHeight={false} // Disable autoHeight to respect the fixed height
         />
       </Box>
     </Box>

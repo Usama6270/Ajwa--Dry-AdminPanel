@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Typography, TextField, Button, Container, Paper } from "@mui/material";
+import { Typography, TextField, Button, Container, Paper, Box } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setUser } from "../state/globalReducer"; // Make sure you have setUser action defined in Redux
+import { setUser } from "../state/globalReducer";
+import backgroundImg from "../pages/pic.jpg"; // Ensure the path matches your project structure
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -42,9 +43,28 @@ const Login = () => {
   };
 
   return (
-    <Container maxWidth="xs">
-      <Paper elevation={3} sx={{ padding: "2rem" }}>
-        <Typography variant="h5" gutterBottom>
+    <Box
+      sx={{
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundImage: `url(${backgroundImg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        position: "relative",
+      }}
+    >
+      <Paper
+        elevation={6}
+        sx={{
+          padding: "2rem",
+          maxWidth: "400px",
+          width: "90%",
+          animation: "fadeIn 1.5s",
+        }}
+      >
+        <Typography variant="h5" gutterBottom sx={{ textAlign: "center" }}>
           Login to Ajwa Dry Fruit
         </Typography>
         <form onSubmit={handleSubmit}>
@@ -67,23 +87,51 @@ const Login = () => {
             required
           />
           {error && <Typography color="error">{error}</Typography>}
-          <Button variant="contained" color="primary" type="submit" fullWidth sx={{ mt: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            fullWidth
+            sx={{
+              mt: 2,
+              transition: "transform 0.2s",
+              "&:hover": { transform: "scale(1.05)" },
+            }}
+          >
             Login
           </Button>
         </form>
 
-        {/* Add Signup Button */}
         <Button
           variant="text"
           color="secondary"
           onClick={handleSignupRedirect}
           fullWidth
-          sx={{ mt: 2 }}
+          sx={{
+            mt: 2,
+            transition: "color 0.2s",
+            "&:hover": { color: "primary.main" },
+          }}
         >
           Don't have an account? Sign Up
         </Button>
       </Paper>
-    </Container>
+      {/* CSS for animations */}
+      <style>
+        {`
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(-10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        `}
+      </style>
+    </Box>
   );
 };
 

@@ -33,6 +33,17 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
 
+  // Log Out Function
+  const handleLogOut = () => {
+    // Clear user session data (e.g., authentication token)
+    localStorage.removeItem('authToken'); // Replace with your auth token key
+    // If you're using Redux to manage user state, you can also clear it like this:
+    // dispatch(logout());
+
+    // Redirect user to the login page
+    navigate("/login"); // Redirects to the login page
+  };
+
   return (
     <AppBar
       sx={{
@@ -107,7 +118,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
               onClose={handleClose}
               anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             >
-              <MenuItem onClick={handleClose}>Log Out</MenuItem>
+              <MenuItem onClick={handleLogOut}>Log Out</MenuItem> {/* Log Out option */}
             </Menu>
           </FlexBetween>
         </FlexBetween>
