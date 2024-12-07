@@ -3,29 +3,27 @@ import ProductStat from "../models/ProductStat.js"
 import User from "../models/User.js";
 import Transaction from "../models/Transaction.js"
 import getCountryIso3 from "country-iso-2-to-3"
+import createNotification from '../utils/sendNotification.js';
 
 export const addProduct = async (req, res) => {
   try {
-      const { name, description, price, rating, category, supply } = req.body;
+    const { name, description, price, rating, category, supply, userId } = req.body;
 
-      // Create a new product document
-      const newProduct = new Product({
-          name,
-          description,
-          price,
-          rating,
-          category,
-          supply
-      });
+    // Create and save the new product
+    const newProduct = new Product({ name, description, price, rating, category, supply });
+    const savedProduct = await newProduct.save();
 
-      // Save the new product to the database
-      const savedProduct = await newProduct.save();
+    // Send a notification to the user
+    if (userId) {
+      const message = `A new product "${name}" has been added to the store.`;
+      const type = 'new-product';
+      await createNotification(userId, message, type);
+    }
 
-      // Respond with the saved product
-      res.status(201).json(savedProduct);
+    res.status(201).json(savedProduct);
   } catch (error) {
-      console.error("Error adding product:", error.message);
-      res.status(500).json({ message: "Failed to add product", error: error.message });
+    console.error('Error adding product:', error.message);
+    res.status(500).json({ message: 'Failed to add product', error: error.message });
   }
 };
 export const getProducts = async (req, res) => {

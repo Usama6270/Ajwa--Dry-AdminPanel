@@ -1,46 +1,43 @@
 export const tokensDark = {
   grey: {
-    0: "#ffffff", 
-    10: "#f5f5f5", 
-    50: "#e0e0e0", 
-    100: "#b0b0b0", 
-    200: "#8a8a8a", 
-    300: "#6a6a6a", 
-    400: "#4a4a4a", 
-    500: "#333333", 
-    600: "#1c1c1c", 
-    700: "#121212", 
-    800: "#0a0a0a", 
-    900: "#0a0a0a", 
-    1000: "#0a0a0a", 
+    0: "#ffffff", // manually adjusted
+    10: "#f6f6f6", // manually adjusted
+    50: "#f0f0f0", // manually adjusted
+    100: "#e0e0e0",
+    200: "#c2c2c2",
+    300: "#a3a3a3",
+    400: "#858585",
+    500: "#666666",
+    600: "#525252",
+    700: "#3d3d3d",
+    800: "#292929",
+    900: "#141414",
+    1000: "#0a0a0a", // Darker black (adjusted)
   },
   primary: {
-    100: "#f4e1c1", 
-    200: "#e8c69b", 
-    300: "#d1a55d", 
-    400: "#bb7e2d", 
-    500: "#9a5d0b", 
-    600: "#7a4507", 
-    700: "#5c2e04", 
-    800: "#3e1802", 
-    900: "#2b1302", 
+    // Purple shades replacing aqua
+    100: "#f2e6ff", // Light purple
+    200: "#d9b3ff", // Soft purple
+    300: "#bf80ff", // Lighter purple
+    400: "#a64dff", // Normal purple
+    500: "#8c1aff", // Default purple
+    600: "#6f00cc", // Darker purple
+    700: "#520099", // Even darker purple
+    800: "#3a0066", // Darkest purple shade
+    900: "#1d0033", // Near black purple tone
   },
   secondary: {
-    50: "#f8ebc2", 
-    100: "#f0d99f", 
-    200: "#e0c77a", 
-    300: "#d1b35d", 
-    400: "#c19c2f", 
-    500: "#a17c14", 
-    600: "#7f5b0e", 
-    700: "#5e450c", 
-    800: "#3e2e0b", 
-    900: "#2e1e09", 
-  },
-  text: {
-    primary: "#ffffff", // Use white text on dark backgrounds for readability
-    secondary: "#b0b0b0", // Lighter grey for secondary text
-    disabled: "#4a4a4a", // Subtle grey for disabled text
+    // Yellow
+    50: "#f0f0f0", // manually adjusted
+    100: "#fff6e0",
+    200: "#ffedc2",
+    300: "#ffe3a3",
+    400: "#ffda85",
+    500: "#ffd166",
+    600: "#cca752",
+    700: "#997d3d",
+    800: "#665429",
+    900: "#332a14",
   },
 };
 
@@ -61,7 +58,7 @@ function reverseTokens(tokensDark) {
 
 export const tokensLight = reverseTokens(tokensDark);
 
-// mui theme settings
+// MUI theme settings
 export const themeSettings = (mode) => {
   return {
     palette: {
@@ -70,50 +67,50 @@ export const themeSettings = (mode) => {
         ? {
             primary: {
               ...tokensDark.primary,
-              main: tokensDark.primary[400],
-              light: tokensDark.primary[400],
+              main: tokensDark.primary[400], // Medium purple for primary elements
+              light: tokensDark.primary[300], // Lighter purple for hover
             },
             secondary: {
               ...tokensDark.secondary,
-              main: tokensDark.secondary[300],
+              main: tokensDark.secondary[300], // Soft yellow for accents
             },
             neutral: {
               ...tokensDark.grey,
               main: tokensDark.grey[500],
             },
             background: {
-              default: tokensDark.primary[600],
-              alt: tokensDark.primary[500],
+              default: tokensDark.primary[900], // Deep purple for dark mode background
+              alt: tokensDark.primary[800], // Slightly lighter purple for alt backgrounds
             },
             text: {
-              primary: tokensDark.text.primary,
-              secondary: tokensDark.text.secondary,
-              disabled: tokensDark.text.disabled,
+              primary: "#ffffff", // White text for high contrast
+              secondary: "#d1c4e9", // Light lavender for secondary text
+              disabled: "#a899b9", // Muted lavender for disabled text
             },
           }
         : {
             primary: {
               ...tokensLight.primary,
-              main: tokensDark.grey[50],
-              light: tokensDark.grey[100],
+              main: tokensLight.primary[500], // Purple for primary elements
+              light: tokensLight.primary[400], // Softer purple for hover
             },
             secondary: {
               ...tokensLight.secondary,
-              main: tokensDark.secondary[600],
-              light: tokensDark.secondary[700],
+              main: tokensLight.secondary[600], // Dark yellow for accents
+              light: tokensLight.secondary[700], // Muted yellow for hover
             },
             neutral: {
               ...tokensLight.grey,
-              main: tokensDark.grey[500],
+              main: tokensLight.grey[700], // Medium grey for neutral text
             },
             background: {
-              default: tokensDark.grey[0],
-              alt: tokensDark.grey[50],
+              default: tokensLight.grey[0], // White for light mode background
+              alt: tokensLight.grey[10], // Very light grey for alt backgrounds
             },
             text: {
-              primary: "#333333", // Dark text for better contrast on light backgrounds
-              secondary: "#6a6a6a", // Grey secondary text
-              disabled: "#b0b0b0", // Lighter grey for disabled text
+              primary: "#333333", // Dark text for readability on light backgrounds
+              secondary: "#5a5a5a", // Grey for secondary text
+              disabled: "#b0b0b0", // Light grey for disabled text
             },
           }),
     },
@@ -123,16 +120,17 @@ export const themeSettings = (mode) => {
       h1: {
         fontFamily: ["Arial", "sans-serif"].join(","),
         fontSize: 40,
-        color: mode === "dark" ? "#ffffff" : "#333333", // Ensure H1 has good contrast
+        color: mode === "dark" ? "#ffffff" : "#333333", // High contrast for headers
       },
       h2: {
         fontFamily: ["Arial", "sans-serif"].join(","),
         fontSize: 32,
-        color: mode === "dark" ? "#ffffff" : "#333333", // Ensure H2 has good contrast
+        color: mode === "dark" ? "#ffffff" : "#333333", // High contrast for headers
       },
       h3: {
         fontFamily: ["Arial", "sans-serif"].join(","),
         fontSize: 24,
+        color: mode === "dark" ? "#d1c4e9" : "#5a5a5a", // Subtle contrast for smaller headers
       },
       h4: {
         fontFamily: ["Arial", "sans-serif"].join(","),

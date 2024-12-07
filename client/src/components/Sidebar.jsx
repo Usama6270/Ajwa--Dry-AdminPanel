@@ -45,7 +45,9 @@ const navItems = [
   { text: "Management", icon: null },
   { text: "Admin", icon: <AdminPanelSettingsOutlined /> },
   { text: "Performance", icon: <TrendingUpOutlined /> },
+  { text: "Notifications", icon: <TodayOutlined /> }, // New section
 ];
+
 
 const Sidebar = ({
   user,

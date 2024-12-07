@@ -21,6 +21,7 @@ import Breakdown from "scenes/breakdown";
 import Admin from "scenes/admin";
 import Performance from "scenes/performance";
 import Settings from "scenes/settings"; // Import the Settings component
+import NotificationsPage from "./pages/NotificationsPage"; // Import NotificationsPage
 
 function App() {
   const dispatch = useDispatch();
@@ -82,6 +83,7 @@ function App() {
               <Route path="/admin" element={<Admin />} />
               <Route path="/performance" element={<Performance />} />
               <Route path="/settings" element={<Settings />} /> {/* Add settings route */}
+              <Route path="/notifications" element={<NotificationsPage />} /> {/* Add notifications route */}
             </Route>
           </Routes>
         </ThemeProvider>

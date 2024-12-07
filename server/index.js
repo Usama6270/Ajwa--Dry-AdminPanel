@@ -10,6 +10,7 @@ import generalRoutes from "./routes/general.js";
 import managementRoutes from "./routes/management.js";
 import salesRoutes from "./routes/sales.js";
 import authRoutes from './routes/auth.js'; 
+import notificationRoutes from './routes/notificationRoutes.js';
 
 /*// data imports
 import User from "./models/User.js";
@@ -42,6 +43,7 @@ app.use('/api/general', generalRoutes);
 app.use('/api/management', managementRoutes);
 app.use('/api/sales', salesRoutes);
 app.use("/api/auth", authRoutes);
+app.use('/api/notifications', notificationRoutes); 
 
 
 /* MONGOOSE SETUP */
