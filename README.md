@@ -40,7 +40,7 @@ Clone the repository:
 
 bash
 Copy code
-git clone https://github.com/yourusername/Ajwa-Dry-AdminPanel.git
+git clone https://github.com/Usama6270/Ajwa-Dry-AdminPanel.git
 cd Ajwa-Dry-AdminPanel
 Install dependencies:
 
