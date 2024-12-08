@@ -1,35 +1,80 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, TextField, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Snackbar } from '@mui/material';
+import {
+  Button,
+  TextField,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Snackbar,
+  CircularProgress,
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
 const ShippingOptions = () => {
   const [shippingOptions, setShippingOptions] = useState([]);
-  const [newShippingOption, setNewShippingOption] = useState({ method: '', deliveryTime: '', charge: '' });
+  const [newShippingOption, setNewShippingOption] = useState({ method: '', deliveryTime: '', charge: '', city: '' });
+  const [weatherData, setWeatherData] = useState(null);
   const [editing, setEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const OPENWEATHER_API_KEY = 'e92d77cd5696959572165b80ec187006';
 
   // Fetch shipping options
+  const fetchShippingOptions = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('http://localhost:9000/api/shipping');
+      setShippingOptions(response.data);
+    } catch (error) {
+      console.error('Error fetching shipping options:', error);
+      setErrorMessage('Error fetching shipping options. Please try again.');
+      setOpenSnackbar(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchShippingOptions = async () => {
-      try {
-        const response = await axios.get('http://localhost:9000/api/shipping');
-        setShippingOptions(response.data);
-      } catch (error) {
-        console.error('Error fetching shipping options:', error);
-        setErrorMessage('Error fetching shipping options. Please try again.');
-        setOpenSnackbar(true);
-      }
-    };
     fetchShippingOptions();
   }, []);
 
+  // Fetch weather data for a city
+  const fetchWeatherData = async (city) => {
+    if (!city) {
+      setErrorMessage('Please provide a valid city name.');
+      setOpenSnackbar(true);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${OPENWEATHER_API_KEY}&units=metric`
+      );
+      setWeatherData(response.data);
+    } catch (error) {
+      console.error('Error fetching weather data:', error);
+      setErrorMessage('Unable to fetch weather data. Please check the city name and try again.');
+      setOpenSnackbar(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Add or update shipping option
   const handleSaveShippingOption = async () => {
-    if (!newShippingOption.method || !newShippingOption.deliveryTime || !newShippingOption.charge) {
+    if (!newShippingOption.method || !newShippingOption.deliveryTime || !newShippingOption.charge || !newShippingOption.city) {
       setErrorMessage('All fields are required.');
       setOpenSnackbar(true);
       return;
@@ -37,20 +82,14 @@ const ShippingOptions = () => {
 
     try {
       if (editing) {
-        // Update shipping option
         await axios.put(`http://localhost:9000/api/shipping/${editId}`, newShippingOption);
       } else {
-        // Add new shipping option
         await axios.post('http://localhost:9000/api/shipping', newShippingOption);
       }
-      setNewShippingOption({ method: '', deliveryTime: '', charge: '' });
+      setNewShippingOption({ method: '', deliveryTime: '', charge: '', city: '' });
       setEditing(false);
       setEditId(null);
-      setErrorMessage('');
-      setOpenSnackbar(true);
-      // Refetch shipping options
-      const response = await axios.get('http://localhost:9000/api/shipping');
-      setShippingOptions(response.data);
+      await fetchShippingOptions();
     } catch (error) {
       console.error('Error saving shipping option:', error);
       setErrorMessage('Error saving shipping option. Please try again.');
@@ -60,7 +99,12 @@ const ShippingOptions = () => {
 
   // Handle edit shipping option
   const handleEditShippingOption = (shippingOption) => {
-    setNewShippingOption({ method: shippingOption.method, deliveryTime: shippingOption.deliveryTime, charge: shippingOption.charge });
+    setNewShippingOption({
+      method: shippingOption.method,
+      deliveryTime: shippingOption.deliveryTime,
+      charge: shippingOption.charge,
+      city: shippingOption.city,
+    });
     setEditing(true);
     setEditId(shippingOption._id);
     setErrorMessage('');
@@ -69,14 +113,15 @@ const ShippingOptions = () => {
   // Handle delete shipping option
   const handleDeleteShippingOption = async (id) => {
     try {
+      setLoading(true);
       await axios.delete(`http://localhost:9000/api/shipping/${id}`);
-      // Refetch shipping options
-      const response = await axios.get('http://localhost:9000/api/shipping');
-      setShippingOptions(response.data);
+      await fetchShippingOptions();
     } catch (error) {
       console.error('Error deleting shipping option:', error);
       setErrorMessage('Error deleting shipping option. Please try again.');
       setOpenSnackbar(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -86,8 +131,10 @@ const ShippingOptions = () => {
   };
 
   return (
-    <div sx={{ padding: 3, backgroundColor: 'background.paper', borderRadius: 2, boxShadow: 3 }}>
-      <Typography variant="h4" sx={{ fontWeight: 'bold', marginBottom: 2 }}>Shipping Options</Typography>
+    <div style={{ padding: 24, backgroundColor: 'black', borderRadius: 8 }}>
+      <Typography variant="h4" style={{ fontWeight: 'bold', marginBottom: 16 }}>
+        Shipping Options
+      </Typography>
 
       {errorMessage && (
         <Snackbar
@@ -105,7 +152,6 @@ const ShippingOptions = () => {
         onChange={(e) => setNewShippingOption({ ...newShippingOption, method: e.target.value })}
         fullWidth
         margin="normal"
-        sx={{ marginBottom: 2 }}
       />
       <TextField
         label="Delivery Time"
@@ -113,7 +159,6 @@ const ShippingOptions = () => {
         onChange={(e) => setNewShippingOption({ ...newShippingOption, deliveryTime: e.target.value })}
         fullWidth
         margin="normal"
-        sx={{ marginBottom: 2 }}
       />
       <TextField
         label="Charge"
@@ -122,44 +167,63 @@ const ShippingOptions = () => {
         onChange={(e) => setNewShippingOption({ ...newShippingOption, charge: e.target.value })}
         fullWidth
         margin="normal"
-        sx={{ marginBottom: 2 }}
+      />
+      <TextField
+        label="City"
+        value={newShippingOption.city}
+        onChange={(e) => setNewShippingOption({ ...newShippingOption, city: e.target.value })}
+        fullWidth
+        margin="normal"
       />
       <Button
         variant="contained"
         color="primary"
         onClick={handleSaveShippingOption}
-        sx={{
-          marginTop: 2,
-          '&:hover': {
-            transform: 'scale(1.05)',
-            transition: 'transform 0.2s',
-          },
-        }}
+        style={{ marginTop: 16 }}
       >
         {editing ? 'Update Shipping Option' : 'Add Shipping Option'}
       </Button>
 
-      <TableContainer component={Paper} sx={{ marginTop: '2rem' }}>
+      <Button
+        variant="outlined"
+        color="secondary"
+        onClick={() => fetchWeatherData(newShippingOption.city)}
+        style={{ marginTop: 16, marginLeft: 16 }}
+      >
+        Get Weather
+      </Button>
+
+      {weatherData && (
+        <div style={{ marginTop: 16, padding: 16, backgroundColor: 'black', borderRadius: 8 }}>
+          <Typography variant="h6">Weather in {weatherData.name}</Typography>
+          <Typography>Temperature: {weatherData.main.temp}°C</Typography>
+          <Typography>Conditions: {weatherData.weather[0].description}</Typography>
+        </div>
+      )}
+
+      <TableContainer component={Paper} style={{ marginTop: 32 }}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontWeight: 500 }}>Method</TableCell>
-              <TableCell sx={{ fontWeight: 500 }}>Delivery Time</TableCell>
-              <TableCell sx={{ fontWeight: 500 }}>Charge</TableCell>
-              <TableCell sx={{ fontWeight: 500 }}>Actions</TableCell>
+              <TableCell>Method</TableCell>
+              <TableCell>Delivery Time</TableCell>
+              <TableCell>Charge</TableCell>
+              <TableCell>City</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {shippingOptions.map((option) => (
-              <TableRow key={option._id} sx={{ '&:hover': { backgroundColor: 'action.hover' } }}>
+              <TableRow key={option._id}>
                 <TableCell>{option.method}</TableCell>
                 <TableCell>{option.deliveryTime}</TableCell>
                 <TableCell>${option.charge}</TableCell>
+                <TableCell>{option.city}</TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleEditShippingOption(option)} sx={{ marginRight: 1 }}>
+                  <IconButton onClick={() => handleEditShippingOption(option)}>
                     <EditIcon />
                   </IconButton>
-                  <IconButton onClick={() => handleDeleteShippingOption(option._id)} sx={{ marginRight: 1 }}>
+                  <IconButton onClick={() => handleDeleteShippingOption(option._id)}>
                     <DeleteIcon />
                   </IconButton>
                 </TableCell>
