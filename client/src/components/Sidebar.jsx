@@ -47,9 +47,12 @@ const navItems = [
   { text: "Admin", icon: <AdminPanelSettingsOutlined /> },
   { text: "Performance", icon: <TrendingUpOutlined /> },
   { text: "Notifications", icon: <TodayOutlined /> },
-  { text: "Promotions", icon: <LocalOfferOutlined /> }, // New section for Promotions
-  { text: "Vouchers", icon: <CardGiftcardOutlined /> }, // New section for Vouchers
+  { text: "Promotions", icon: <LocalOfferOutlined /> },
+  { text: "Vouchers", icon: <CardGiftcardOutlined /> },
+  { text: "Shipping Options", icon: <PublicOutlined /> }, // New section for Shipping Options
+  { text: "Tax Settings", icon: <ReceiptLongOutlined /> }, // New section for Tax Settings
 ];
+
 
 const Sidebar = ({
   user,

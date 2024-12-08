@@ -24,6 +24,8 @@ import Settings from "scenes/settings"; // Import the Settings component
 import NotificationsPage from "./pages/NotificationsPage"; // Import NotificationsPage
 import PromotionsPage from "./pages/PromotionsPage"; // Import PromotionsPage
 import VouchersPage from "./pages/VouchersPage"; // Import VouchersPage
+import ShippingOptions from "./pages/ShippingOptions"; // Corrected import
+import TaxSettings from "./pages/TaxSettings"; // Corrected import
 
 function App() {
   const dispatch = useDispatch();
@@ -86,8 +88,10 @@ function App() {
               <Route path="/performance" element={<Performance />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/notifications" element={<NotificationsPage />} />
-              <Route path="/promotions" element={<PromotionsPage />} /> {/* Add Promotions route */}
-              <Route path="/vouchers" element={<VouchersPage />} /> {/* Add Vouchers route */}
+              <Route path="/promotions" element={<PromotionsPage />} />
+              <Route path="/vouchers" element={<VouchersPage />} />
+              <Route path="/shipping options" element={<ShippingOptions />} /> {/* Shipping route */}
+              <Route path="/tax settings" element={<TaxSettings />} /> {/* Tax route */}
             </Route>
           </Routes>
         </ThemeProvider>

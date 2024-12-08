@@ -13,6 +13,8 @@ import authRoutes from './routes/auth.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import promotionsRouter from './routes/promotions.js'; // Correct path and import
 import vouchersRouter from './routes/vouchers.js';
+import shippingRoutes from './routes/shipping.js';
+import taxRoutes from './routes/tax.js';
 /*// data imports*/
 /*import User from "./models/User.js";
 import Product from "./models/Product.js";
@@ -47,6 +49,8 @@ app.use("/api/auth", authRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/promotions', promotionsRouter); // Use promotions router
 app.use('/api/vouchers', vouchersRouter);
+app.use('/api/shipping', shippingRoutes);
+app.use('/api/tax', taxRoutes);
 
 
 /* MONGOOSE SETUP */
