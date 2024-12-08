@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import {
-  LightModeOutlined,
-  DarkModeOutlined,
   Menu as MenuIcon,
   SettingsOutlined,
 } from "@mui/icons-material";
-import { useDispatch } from "react-redux";
-import { setMode } from "state";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import profileImage from "assets/profile.jpeg";
 import {
   AppBar,
@@ -17,21 +14,14 @@ import {
   Toolbar,
   useTheme,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
 import FlexBetween from "components/FlexBetween"; // Assuming FlexBetween component exists
 
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
-  const dispatch = useDispatch();
   const theme = useTheme();
   const navigate = useNavigate(); // Initialize useNavigate
 
   // State to track if the profile image is clicked
   const [isImageEnlarged, setIsImageEnlarged] = useState(false);
-
-  // Handle Mode Toggle (Light/Dark Mode)
-  const handleModeToggle = () => {
-    dispatch(setMode()); // Dispatch mode change action
-  };
 
   // Handle Image Click to toggle its size
   const handleImageClick = () => {
@@ -56,17 +46,8 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
 
         {/* RIGHT SIDE */}
         <FlexBetween gap="1.5rem">
-          {/* Light/Dark Mode Toggle */}
-          <IconButton onClick={handleModeToggle}>
-            {theme.palette.mode === "dark" ? (
-              <DarkModeOutlined sx={{ fontSize: "25px" }} />
-            ) : (
-              <LightModeOutlined sx={{ fontSize: "25px" }} />
-            )}
-          </IconButton>
-
           {/* Settings Icon */}
-          <IconButton onClick={() => navigate("/settings")}> {/* Navigate */}
+          <IconButton onClick={() => navigate("/settings")}>
             <SettingsOutlined sx={{ fontSize: "25px" }} />
           </IconButton>
 
